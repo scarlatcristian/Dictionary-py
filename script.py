@@ -5,16 +5,29 @@ data = json.load(open("data.json"))
 
 
 def translate(word):
-    word = word.lower()
     if word in data:
         return data[word]
     elif len(get_close_matches(word, data.keys())) > 0:
-        return f"Did you mean {get_close_matches(word, data.keys())[0]} instead"
-
+        yes_or_no = input(
+            f"Did you mean {get_close_matches(word, data.keys())[0]} instead? Enter Y if yes, or N if no. ").lower()
+        if yes_or_no == 'y':
+            return data[get_close_matches(word, data.keys())[0]]
+        elif yes_or_no == 'n':
+            return f"The word {word} does not exist. Please double check it."
+        else:
+            return "We did not understand your entry."
     else:
-        return f"The word {word} does not exist. Please double check it"
+        return f"The word {word} does not exist. Please double check it."
 
 
-word = input("Enter a word: ")
+word = input("Enter a word: ").lower()
 
-print(translate(word))
+output = translate(word)
+
+index = 1
+if type(output) == list:
+    for definition in output:
+        print(f"{index}. {definition}")
+        index += 1
+else:
+    print(output)
